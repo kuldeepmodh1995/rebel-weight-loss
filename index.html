@@ -47,92 +47,6 @@
         opacity: 0.4;
       }
 
-      /* ─── GATE SECTION ─── */
-      #gate {
-        position: fixed;
-        inset: 0;
-        background: #000;
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 2rem;
-        transition: opacity 0.8s ease, transform 0.8s ease;
-      }
-
-      #gate.hidden {
-        opacity: 0;
-        transform: scale(1.05);
-        pointer-events: none;
-      }
-
-      #gate h1 {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: clamp(2.5rem, 8vw, 6rem);
-        color: var(--red-hot);
-        letter-spacing: 0.05em;
-        line-height: 1;
-        margin-bottom: 1.5rem;
-        text-shadow: 0 0 40px rgba(231, 76, 60, 0.6);
-      }
-
-      #gate p {
-        font-size: clamp(1rem, 2.5vw, 1.3rem);
-        color: var(--grey);
-        max-width: 600px;
-        line-height: 1.7;
-        margin-bottom: 2.5rem;
-      }
-
-      #gate p strong {
-        color: var(--white);
-      }
-
-      .gate-buttons {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .btn-enter {
-        background: var(--red);
-        color: #fff;
-        border: none;
-        padding: 1rem 2.5rem;
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 1.4rem;
-        letter-spacing: 0.1em;
-        cursor: pointer;
-        transition: all 0.3s;
-        clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-      }
-
-      .btn-enter:hover {
-        background: var(--red-hot);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
-      }
-
-      .btn-leave {
-        background: transparent;
-        color: var(--grey);
-        border: 1px solid #333;
-        padding: 1rem 2.5rem;
-        font-family: 'Inter', sans-serif;
-        font-size: 0.9rem;
-        letter-spacing: 0.1em;
-        cursor: pointer;
-        transition: all 0.3s;
-        text-transform: uppercase;
-      }
-
-      .btn-leave:hover {
-        color: var(--white);
-        border-color: #555;
-      }
 
       /* ─── SCROLLING TICKER ─── */
       .ticker-wrap {
@@ -1193,22 +1107,6 @@
     </style>
   </head>
   <body>
-    <!-- ─── GATE ─── -->
-    <div id="gate">
-      <h1>STOP.<br />READ THIS FIRST.</h1>
-      <p>
-        This program is <strong>not for 90% of you.</strong><br />
-        Before you go any further, you need to ask yourself one question.<br /><br />
-        <strong>Are you truly ready to change — or are you just looking for another shortcut?</strong>
-      </p>
-      <div class="gate-buttons">
-        <button class="btn-enter" onclick="enterSite()">I AM READY — LET ME IN</button>
-        <button class="btn-leave" onclick="window.location.href='https://google.com'">
-          I'm not ready. I'll leave.
-        </button>
-      </div>
-    </div>
-
     <!-- ─── TICKER ─── -->
     <div class="ticker-wrap">
       <div class="ticker">
@@ -1254,7 +1152,13 @@
     <!-- ─── WARNING ─── -->
     <section id="warning">
       <div class="container reveal">
-        <h2>⚠ THIS IS NOT FOR YOU.</h2>
+        <h2>STOP. READ THIS FIRST.</h2>
+        <p>
+          This program is <strong>not for 90% of you.</strong><br />
+          Before you go any further, you need to ask yourself one question.<br /><br />
+          <strong>Are you truly ready to change — or are you just looking for another shortcut?</strong>
+        </p>
+        <h2 style="margin-top:2rem;">⚠ THIS IS NOT FOR YOU.</h2>
         <p>
           If you are <strong>fat and looking to lose weight</strong> — this is not for you.<br />
           If you are <strong>lazy</strong> — this is not for you.<br />
@@ -1756,15 +1660,6 @@
     </button>
 
     <script>
-      // Gate
-      function enterSite() {
-        const gate = document.getElementById('gate');
-        gate.classList.add('hidden');
-        setTimeout(() => {
-          gate.style.display = 'none';
-        }, 800);
-      }
-
       // Floating CTA
       window.addEventListener('scroll', () => {
         const btn = document.getElementById('floatBtn');
