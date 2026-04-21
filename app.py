@@ -5,13 +5,32 @@ st.set_page_config(
     page_title="REBEL — Weight Loss Program",
     page_icon="🔥",
     layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
+# Nuke every Streamlit chrome element and all padding/margin wrappers
 st.markdown("""
 <style>
-#MainMenu, header, footer { visibility: hidden; }
-.block-container { padding: 0 !important; max-width: 100% !important; }
-iframe { display: block; }
+  #MainMenu, header, footer, [data-testid="stToolbar"],
+  [data-testid="stDecoration"], [data-testid="stStatusWidget"],
+  .stDeployButton { display: none !important; visibility: hidden !important; }
+
+  html, body, [data-testid="stAppViewContainer"],
+  [data-testid="stMain"], section.main,
+  .main .block-container, .block-container,
+  [data-testid="stVerticalBlock"],
+  [data-testid="stVerticalBlockBorderWrapper"] {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  iframe {
+    display: block !important;
+    width: 100vw !important;
+    border: none !important;
+  }
 </style>
 """, unsafe_allow_html=True)
 
@@ -42,7 +61,7 @@ HTML = """<!doctype html>
         background: var(--black);
         color: var(--white);
         font-family: 'Inter', sans-serif;
-        overflow-x: hidden;
+        overflow-x: clip;
       }
 
       body::before {
@@ -670,4 +689,25 @@ HTML = """<!doctype html>
   </body>
 </html>"""
 
-components.html(HTML, height=18000, scrolling=False)
+# Use a JS snippet to measure real screen height and feed it back via query param trick.
+# scrolling=True + very tall height = native scroll inside the iframe (no outer scroll needed).
+import urllib.parse
+
+# Inject a small shim that sets html/body height to auto so scrollHeight is accurate
+HEIGHT_SHIM = """
+<script>
+  // Tell the Streamlit parent our real scroll height every time it changes
+  function reportHeight() {
+    const h = document.documentElement.scrollHeight;
+    window.parent.postMessage({type:'streamlit:setFrameHeight', height: h}, '*');
+  }
+  document.addEventListener('DOMContentLoaded', reportHeight);
+  window.addEventListener('load', reportHeight);
+  setTimeout(reportHeight, 800);
+  setTimeout(reportHeight, 2000);
+  new ResizeObserver(reportHeight).observe(document.documentElement);
+</script>
+"""
+
+FULL_HTML = HTML.replace("</body>", HEIGHT_SHIM + "</body>")
+components.html(FULL_HTML, height=20000, scrolling=False)
