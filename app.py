@@ -649,15 +649,25 @@ HTML = """<!doctype html>
       }, { threshold: 0.5 });
       document.querySelectorAll('.stat-number').forEach(el => counterObserver.observe(el));
 
-      // Notify parent of full document height so Streamlit iframe resizes
+      // Continuously report full document height to Streamlit so iframe auto-sizes
       function postHeight() {
-        const h = document.documentElement.scrollHeight;
+        const h = Math.max(
+          document.body.scrollHeight,
+          document.documentElement.scrollHeight,
+          document.body.offsetHeight,
+          document.documentElement.offsetHeight
+        );
         window.parent.postMessage({ type: 'streamlit:setFrameHeight', height: h }, '*');
       }
-      window.addEventListener('load', postHeight);
+
+      // Fire on load, after fonts/images settle, and on any resize
+      window.addEventListener('load', () => { postHeight(); setTimeout(postHeight, 500); setTimeout(postHeight, 1500); });
       window.addEventListener('resize', postHeight);
+
+      // MutationObserver catches any DOM changes (reveal animations, etc.)
+      new MutationObserver(postHeight).observe(document.body, { subtree: true, childList: true, attributes: true });
     </script>
   </body>
 </html>"""
 
-components.html(HTML, height=9500, scrolling=False)
+components.html(HTML, height=18000, scrolling=False)
